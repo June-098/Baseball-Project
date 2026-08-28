@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 .venv/
 __pycache__/
@@ -52,3 +53,11 @@ src/*.m4a
 2026-08-15-resume-summary.md
 condition_122_media_calculator*
 2D Overlay Failure.png
+=======
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+.env.local
+>>>>>>> 235b4bb6a8416830f46b3b0631f8deb8e16649fb
