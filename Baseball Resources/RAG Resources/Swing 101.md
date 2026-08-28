@@ -1,0 +1,5 @@
+Launch angle matters because hitting the ball in the air creates more opportunities for extra-base hits and home runs. The examples in the text show hitters improving their production as they raised their average launch angle.
+
+A downswing is inefficient because the pitch is already traveling downward. Chopping down makes the bat cross the ball’s path briefly, reducing the opportunity for solid contact and often producing groundballs, rollovers, or pop-ups. That may work against young defenders, but it is not a reliable path to success in the big leagues.
+
+A “south-to-east” swing—a barrel moving from low to forward and slightly upward—better matches the pitch’s descending plane and keeps the bat in the hitting zone longer. On a low pitch, it lets the hitter get underneath the ball and create lift and backspin. On a high pitch, the hitter can meet the ball farther out front while the barrel is still traveling through its upward plane. The goal is not a dramatic uppercut, but an efficient, on-plane swing that can handle pitches at different heights.

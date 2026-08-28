@@ -1,0 +1,54 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+.claude/
+
+# Secrets
+.env
+.env.*
+credentials.json
+
+# Source footage and datasets (too large for git)
+Batting Videos/
+Gradum Gswing/
+Penn_Action/
+
+# Model weights (download separately)
+*.pt
+*.bin
+models/
+
+# Pipeline / notebook outputs
+src/output/
+data/
+*.mp4
+*.mov
+*.MOV
+*.m4v
+*.m4a
+*.wav
+YOLO_Baseball.ipynb
+
+# RAG indexes are rebuilt with: python src/rag_ingest.py --rebuild
+Baseball Resources/RAG Resources/rag_index/
+Baseball Resources/rag_index/
+*.pkl
+
+# Nested third-party clone + Node build artifacts
+src/swinglens-prototype/
+node_modules/
+.next/
+
+# Personal / unrelated to this repo
+src/*.png
+src/*.txt
+src/*.m4a
+2026-08-15-resume-summary.md
+condition_122_media_calculator*
+2D Overlay Failure.png

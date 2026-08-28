@@ -1,0 +1,13 @@
+{
+	"nodes":[
+		{"id":"b1645dce0db00e50","x":-200,"y":-440,"width":250,"height":60,"type":"text","text":"Video Input"},
+		{"id":"28851c2e531768eb","x":-500,"y":-280,"width":250,"height":60,"type":"text","text":"Ball Tracking - TrackNet"},
+		{"id":"98c2ebb13b83bffd","x":-200,"y":-280,"width":250,"height":60,"type":"text","text":"Pose Estimate - Body joints & Landmarks"},
+		{"id":"4d805955593a98dd","x":100,"y":-280,"width":250,"height":60,"type":"text","text":"Bat Path - Object Tracking"}
+	],
+	"edges":[
+		{"id":"8cec79b846985627","fromNode":"b1645dce0db00e50","fromSide":"bottom","toNode":"28851c2e531768eb","toSide":"top"},
+		{"id":"599ae9245d2173d3","fromNode":"b1645dce0db00e50","fromSide":"bottom","toNode":"98c2ebb13b83bffd","toSide":"top"},
+		{"id":"6267743cb6288e7f","fromNode":"b1645dce0db00e50","fromSide":"bottom","toNode":"4d805955593a98dd","toSide":"top"}
+	]
+}
