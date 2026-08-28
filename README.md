@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Baseball Batting Analysis — CV Pipeline
 
 A single-camera (phone video) pipeline that turns batting footage into body-mechanics
@@ -110,3 +111,6 @@ colab/                 self-contained Colab cells (GPU / interactive work)
 feedback-engine/       MEDA/APA/APE agent artifacts (one file per agent per run)
 models/MotionBERT/     checkpoint location (falls back to G:/My Drive/models/MotionBERT)
 ```
+=======
+# Baseball-Project
+>>>>>>> 00eeb3953539f8458a2042e0904ff3b545f5b4d7

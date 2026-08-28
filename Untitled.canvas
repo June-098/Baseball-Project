@@ -1,0 +1,23 @@
+{
+	"nodes":[
+		{"id":"2bc3ce450ff26cc3","x":-520,"y":-380,"width":140,"height":120,"type":"text","text":"## Input:\nContext"},
+		{"id":"db670a63c1247dec","x":-260,"y":-350,"width":250,"height":60,"type":"text","text":"## Retriever"},
+		{"id":"43a7adc901d39b9c","x":-260,"y":-200,"width":250,"height":115,"type":"text","text":"## Embedding Model in Vector representation"},
+		{"id":"7f79da74ad16856c","x":-260,"y":0,"width":250,"height":126,"type":"text","text":"## Vector Database:\n- Pinecone"},
+		{"id":"3f4bbf1a47e73b06","x":-600,"y":-192,"width":250,"height":100,"type":"text","text":"## Docs: 야구 표본, 학회 논문, 기술자 에세이 등등"},
+		{"id":"4a973a987447baea","x":-600,"y":33,"width":250,"height":60,"type":"text","text":"## User Input Image, Video, or Text"},
+		{"id":"7350dc1f53305aed","x":-420,"y":-540,"width":250,"height":60,"type":"text","text":"## LLM"}
+	],
+	"edges":[
+		{"id":"fe113fa9ecb51a13","fromNode":"43a7adc901d39b9c","fromSide":"bottom","toNode":"7f79da74ad16856c","toSide":"top"},
+		{"id":"6a40e188398f66f4","fromNode":"7f79da74ad16856c","fromSide":"top","toNode":"43a7adc901d39b9c","toSide":"bottom"},
+		{"id":"792742be2435ab4e","fromNode":"3f4bbf1a47e73b06","fromSide":"right","toNode":"43a7adc901d39b9c","toSide":"left"},
+		{"id":"bad72b9cf8e8ee6b","fromNode":"db670a63c1247dec","fromSide":"bottom","toNode":"43a7adc901d39b9c","toSide":"top"},
+		{"id":"2b4530d0064838f5","fromNode":"43a7adc901d39b9c","fromSide":"top","toNode":"db670a63c1247dec","toSide":"bottom"},
+		{"id":"477d216615d34b65","fromNode":"2bc3ce450ff26cc3","fromSide":"right","toNode":"db670a63c1247dec","toSide":"left"},
+		{"id":"b5daa8704f54c6b1","fromNode":"db670a63c1247dec","fromSide":"left","toNode":"2bc3ce450ff26cc3","toSide":"right"},
+		{"id":"e5a6f6b1f5fb3f67","fromNode":"4a973a987447baea","fromSide":"top","toNode":"3f4bbf1a47e73b06","toSide":"bottom"},
+		{"id":"f684fed087a67053","fromNode":"2bc3ce450ff26cc3","fromSide":"top","toNode":"7350dc1f53305aed","toSide":"bottom"},
+		{"id":"4c67ae8195a7670f","fromNode":"7350dc1f53305aed","fromSide":"bottom","toNode":"2bc3ce450ff26cc3","toSide":"top"}
+	]
+}
