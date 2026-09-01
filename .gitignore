@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Python
 .venv/
 __pycache__/
@@ -13,6 +12,7 @@ __pycache__/
 # Secrets
 .env
 .env.*
+!.env.example
 credentials.json
 
 # Source footage and datasets (too large for git)
@@ -45,6 +45,8 @@ Baseball Resources/rag_index/
 src/swinglens-prototype/
 node_modules/
 .next/
+dist/
+*.log
 
 # Personal / unrelated to this repo
 src/*.png
@@ -53,11 +55,3 @@ src/*.m4a
 2026-08-15-resume-summary.md
 condition_122_media_calculator*
 2D Overlay Failure.png
-=======
-node_modules/
-dist/
-.DS_Store
-*.log
-.env
-.env.local
->>>>>>> 235b4bb6a8416830f46b3b0631f8deb8e16649fb

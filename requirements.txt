@@ -11,3 +11,5 @@ timm
 # Local transcription (src/transcribe_videos.py). Needs ffmpeg on PATH:
 #   brew install ffmpeg
 faster-whisper
+langchain-text-splitters
+python-dotenv

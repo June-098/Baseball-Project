@@ -1,38 +1,49 @@
 """
-RAG ingestion — chunks.jsonl -> local ChromaDB + BM25 index.
+RAG ingestion — parent-child chunks -> local ChromaDB + BM25 index.
 
-Builds the retrieval layer for the baseball Q&A assistant. Everything runs on your
-machine: ChromaDB persists to a folder, embeddings come from a local
-sentence-transformers model, and no data leaves the laptop.
+This file is the retrieval layer. Run it *before* rag_eval.py or rag_answer.py.
+Those scripts import Retriever from here; they do not rebuild the index.
+
+    python src/rag_ingest.py --rebuild
+    python src/rag_eval.py
+    python src/rag_answer.py "what is launch angle?"
 
     Input :  Baseball Resources/RAG Resources/*.md
-    Output:  Baseball Resources/RAG Resources/rag_index/chroma/     ChromaDB store
-             Baseball Resources/RAG Resources/rag_index/bm25.pkl    keyword index
+    Output:  Baseball Resources/RAG Resources/rag_index/chroma/
+             Baseball Resources/RAG Resources/rag_index/bm25.pkl
              Baseball Resources/RAG Resources/rag_index/chunks.jsonl
 
+Full narrative (why prefixes, hybrid, rerank, parent-child): CODE_OVERVIEW.md
+under "`rag_ingest.py` — indexing and retrieval".
+
 ── Setup ────────────────────────────────────────────────────────────────────
-    pip install chromadb sentence-transformers rank-bm25
+    pip install chromadb sentence-transformers rank-bm25 transformers
 
 ── Usage ────────────────────────────────────────────────────────────────────
     python src/rag_ingest.py                      # build the index
     python src/rag_ingest.py --rebuild            # wipe and rebuild
-    python src/rag_ingest.py --query "curveball"  # smoke-test retrieval
+    python src/rag_ingest.py --query "curveball"  # smoke-test (parents, not an answer)
 
-── Two design decisions worth knowing ───────────────────────────────────────
+── What actually gets stored ────────────────────────────────────────────────
 
-1. CONTEXTUAL PREFIXES. Each chunk is embedded as
+1. PARENT-CHILD. rag_chunk.py cuts Markdown structurally. Children (~120–220
+   embedding-model tokens) are embedded and searched. rag_answer expands a hit
+   to parent_text (~300–600 tokens) for the LLM. Eval ranks children.
 
-       [Source: How to hit a curve ball] So when the ball breaks down and away...
+2. EMBEDDING STRING. Not the raw paragraph. Hierarchy header plus body:
 
-   Mid-video chunks often never name their own topic — the coach just says "it".
-   Without the prefix, a question about curveballs can miss the very video that
-   answers it. Prepending the title carries topic into the vector. The prefix is
-   embedded but NOT shown to the user; `text` stays clean for display.
+       Document: Contact Point
+       Section: Step-by-Step Explanation > Inside pitch
+       Content type: hitting mechanics instruction
 
-2. HYBRID RETRIEVAL. Vector search is strong on paraphrase ("load my hips" ->
-   "the gather") and weak on exact strings. Named drills and player names are
-   exact-string problems, so BM25 runs alongside and the two rankings are fused
-   with Reciprocal Rank Fusion. Neither alone covers this corpus.
+       The hitter turns more tightly...
+
+   That replaced the old [Source: Title] … [Topic: Title] wrap. Same job: mid-note
+   chunks say "it"; the header puts the topic in the mean-pooled vector.
+
+3. HYBRID SEARCH. Vector (bge-small-en-v1.5, 384-d, cosine) + BM25, fused with
+   weighted RRF (vector 1.0, BM25 0.35, BM25 floor 2.0). Equal-weight fusion
+   used to lose to vector-only on this corpus. Optional cross-encoder: --rerank.
 """
 import sys
 import json
@@ -51,9 +62,6 @@ CHROMA_DIR = RAG_DIR / "chroma"
 BM25_PATH  = RAG_DIR / "bm25.pkl"
 CHUNKS_PATH = RAG_DIR / "chunks.jsonl"
 COLLECTION = "baseball_transcripts"
-
-CHUNK_WORDS = 220
-CHUNK_OVERLAP = 45
 
 # bge-small-en-v1.5: 384-dim, ~130MB, consistently strong on short-passage
 # retrieval and cheap enough to re-embed the whole corpus in seconds.
@@ -76,20 +84,14 @@ def _check_deps():
     missing = []
     for mod, pkg in [("chromadb", "chromadb"),
                      ("sentence_transformers", "sentence-transformers"),
-                     ("rank_bm25", "rank-bm25")]:
+                     ("rank_bm25", "rank-bm25"),
+                     ("transformers", "transformers")]:
         try:
             __import__(mod)
         except ImportError:
             missing.append(pkg)
     if missing:
         raise RuntimeError("Missing packages:\n  pip install " + " ".join(missing))
-
-
-_HEADING_RE = re.compile(r"^(#{1,3})\s+(.+)$")
-_SOURCE_VIDEO_RE = re.compile(r"\*\*Source video:\*\*\s*`([^`]+)`")
-_META_LINE_RE = re.compile(
-    r"^\s*-\s+\*\*(Source video|Duration|Sentences kept):", re.IGNORECASE
-)
 
 
 def list_rag_markdown(directory: Path = None) -> list:
@@ -106,97 +108,10 @@ def list_rag_markdown(directory: Path = None) -> list:
     return files
 
 
-def _section_blocks(md: str) -> list:
-    """Split markdown into (heading, body) pairs. Lead text before the first heading is kept."""
-    sections, heading, body_lines = [], "", []
-    for line in md.splitlines():
-        m = _HEADING_RE.match(line)
-        if m:
-            body = "\n".join(body_lines).strip()
-            if body:
-                sections.append((heading, body))
-            heading = m.group(2).strip()
-            body_lines = []
-        else:
-            body_lines.append(line)
-    body = "\n".join(body_lines).strip()
-    if body:
-        sections.append((heading, body))
-    return sections
-
-
-def _paragraph_blocks(body: str) -> list:
-    """Keep tables intact; split the rest on blank lines. Drop front-matter meta lines."""
-    blocks, current, in_table = [], [], False
-    for line in body.splitlines():
-        if _META_LINE_RE.match(line) or line.strip() == "---":
-            continue
-        if line.strip().startswith("|"):
-            if not in_table and current:
-                blocks.append("\n".join(current).strip())
-                current = []
-            in_table = True
-            current.append(line)
-            continue
-        if in_table:
-            blocks.append("\n".join(current).strip())
-            current, in_table = [], False
-        if not line.strip():
-            if current:
-                blocks.append("\n".join(current).strip())
-                current = []
-        else:
-            current.append(line)
-    if current:
-        blocks.append("\n".join(current).strip())
-    return [b for b in blocks if b]
-
-
-def _pack_blocks(blocks: list, chunk_words: int, overlap: int) -> list:
-    chunks, cur, cur_words = [], [], 0
-    for block in blocks:
-        w = len(block.split())
-        if cur and cur_words + w > chunk_words:
-            chunks.append("\n\n".join(cur))
-            back, wc = [], 0
-            for b in reversed(cur):
-                if wc >= overlap:
-                    break
-                back.insert(0, b)
-                wc += len(b.split())
-            cur, cur_words = back, wc
-        cur.append(block)
-        cur_words += w
-    if cur:
-        chunks.append("\n\n".join(cur))
-    return chunks
-
-
-def chunks_from_markdown(path: Path, chunk_words: int = CHUNK_WORDS,
-                         overlap: int = CHUNK_OVERLAP) -> list:
-    raw = path.read_text(encoding="utf-8")
-    m = _SOURCE_VIDEO_RE.search(raw)
-    source_file = m.group(1) if m else path.name
-    title = path.stem
-    rows = []
-    idx = 0
-    for heading, body in _section_blocks(raw):
-        packed = _pack_blocks(_paragraph_blocks(body), chunk_words, overlap)
-        for text in packed:
-            if heading:
-                text = f"{heading}\n\n{text}"
-            rows.append({
-                "id": f"{title}::{idx:03d}",
-                "text": text,
-                "source_title": title,
-                "source_file": source_file,
-                "timestamp_s": 0,
-                "timestamp": heading or "note",
-                "chunk_index": idx,
-                "word_count": len(text.split()),
-            })
-            idx += 1
-    return rows
+def chunks_from_markdown(path: Path, **_ignored) -> list:
+    """Parent-child children for one note. Extra kwargs ignored (old RCTS API)."""
+    from rag_chunk import children_from_markdown
+    return children_from_markdown(path)
 
 
 def load_jsonl(path: Path) -> list:
@@ -229,7 +144,8 @@ def load_chunks(path: Path = None) -> list:
     chunks = []
     for p in files:
         rows = chunks_from_markdown(p)
-        print(f"  {p.stem[:52]:52s} {len(rows):3d} chunk(s)")
+        n_parents = len({c.get("parent_id") for c in rows})
+        print(f"  {p.stem[:52]:52s} {len(rows):3d} children / {n_parents:3d} parents")
         chunks.extend(rows)
     if not chunks:
         raise RuntimeError(f"No embeddable text in {RAG_RESOURCES_DIR}")
@@ -242,18 +158,9 @@ def clean_title(source_title: str) -> str:
 
 
 def contextual_text(chunk: dict) -> str:
-    """
-    What actually gets embedded — the title wrapped around the chunk body.
-
-    TITLE DILUTION: embeddings mean-pool over tokens, so a 5-word prefix on a
-    220-word chunk contributes ~2% of the signal. That was measurably too weak —
-    "How do I hit a curveball?" retrieved a high-pitch video over the curve ball
-    video, because the curve ball transcript says "breaking ball" throughout and
-    "curveball" only once, while the title (which does say it) barely registered.
-
-    Repeating the title at both ends roughly doubles its weight for a few tokens
-    of cost. Cheap, and it targets exactly the failure we measured.
-    """
+    """What actually gets embedded — hierarchy prefix plus the child Markdown body."""
+    if chunk.get("embedding_text"):
+        return chunk["embedding_text"]
     title = clean_title(chunk["source_title"])
     return f"[Source: {title}] {chunk['text']} [Topic: {title}]"
 
@@ -304,8 +211,11 @@ def build(chunks_path: Path = None, rebuild: bool = False):
             "source_title": c["source_title"],
             "source_file":  c.get("source_file", ""),
             "timestamp":    c.get("timestamp", ""),
-            "timestamp_s":  c.get("timestamp_s", 0),
-            "chunk_index":  c.get("chunk_index", 0),
+            "timestamp_s":  int(c.get("timestamp_s", 0) or 0),
+            "chunk_index":  int(c.get("chunk_index", 0) or 0),
+            "parent_id":    c.get("parent_id", ""),
+            "content_type": c.get("content_type", ""),
+            "section_path": c.get("section_path", ""),
         } for c in chunks],
     )
     print(f"Chroma collection '{COLLECTION}' -> {col.count()} docs")
@@ -335,6 +245,9 @@ class Retriever:
         self.client = chromadb.PersistentClient(path=str(CHROMA_DIR))
         self.col = self.client.get_collection(COLLECTION)
         self._ce = None          # cross-encoder, loaded lazily on first rerank
+        self._by_id = {}
+        if CHUNKS_PATH.exists():
+            self._by_id = {c["id"]: c for c in load_jsonl(CHUNKS_PATH)}
 
         with open(BM25_PATH, "rb") as f:
             blob = pickle.load(f)
@@ -365,7 +278,8 @@ class Retriever:
     def search(self, query: str, k: int = 5, rrf_k: int = 60,
                use_hybrid: bool = True, vec_weight: float = VEC_WEIGHT,
                bm25_weight: float = BM25_WEIGHT,
-               bm25_floor: float = BM25_MIN_SCORE, rerank: bool = False) -> list:
+               bm25_floor: float = BM25_MIN_SCORE, rerank: bool = False,
+               expand_parent: bool = False) -> list:
         """
         Weighted Reciprocal Rank Fusion.
 
@@ -387,8 +301,10 @@ class Retriever:
         pool = max(k * 4, 20)
         vec = self.vector_search(query, k=pool)
         if not use_hybrid:
-            out = vec[:k]
-            return self._rerank(query, vec, k) if rerank else out
+            results = self._rerank(query, vec, k=pool) if rerank else vec
+            if expand_parent:
+                return self._expand_to_parents(results, k)
+            return results[:k]
 
         kw = [h for h in self.keyword_search(query, k=pool)
               if h["score"] >= bm25_floor]
@@ -403,7 +319,7 @@ class Retriever:
 
         vec_by_id = {h["id"]: h for h in vec}
         order = sorted(fused.items(), key=lambda x: -x[1])
-        candidates = order[: pool if rerank else k]
+        candidates = order[:pool]
 
         results = []
         for cid, rrf in candidates:
@@ -414,7 +330,37 @@ class Retriever:
                        "meta": got["metadatas"][0], "score": None}
             results.append({**hit, "rrf": rrf})
 
-        return self._rerank(query, results, k) if rerank else results[:k]
+        if rerank:
+            results = self._rerank(query, results, k=pool)
+        if expand_parent:
+            return self._expand_to_parents(results, k)
+        return results[:k]
+
+    def _expand_to_parents(self, hits: list, k: int) -> list:
+        """Child vectors retrieve; the LLM receives the parent (deduped)."""
+        out = []
+        seen = set()
+        for h in hits:
+            rec = self._by_id.get(h["id"], {})
+            pid = rec.get("parent_id") or h["id"]
+            if pid in seen:
+                continue
+            seen.add(pid)
+            parent = rec.get("parent_text") or h["text"]
+            meta = dict(h.get("meta") or {})
+            if rec.get("section_path"):
+                meta["timestamp"] = rec["section_path"]
+            if rec.get("parent_id"):
+                meta["parent_id"] = rec["parent_id"]
+            out.append({
+                **h,
+                "text": parent,
+                "child_text": rec.get("text", h["text"]),
+                "meta": meta,
+            })
+            if len(out) >= k:
+                break
+        return out
 
     def _rerank(self, query: str, candidates: list, k: int) -> list:
         """
@@ -480,7 +426,8 @@ if __name__ == "__main__":
     try:
         if a.query:
             r = Retriever()
-            hits = r.search(a.query, k=a.k, use_hybrid=not a.no_hybrid, rerank=a.rerank)
+            hits = r.search(a.query, k=a.k, use_hybrid=not a.no_hybrid, rerank=a.rerank,
+                            expand_parent=True)
             print(f"\nQuery: {a.query!r}")
             print(f"Top vector similarity: {r.best_vector_score(a.query):.3f}")
             if a.rerank:
@@ -492,14 +439,17 @@ if __name__ == "__main__":
                 s = f"{h['score']:.3f}" if h["score"] is not None else "  -  "
                 print(f"{i}. [{s}] {h['meta']['source_title'][:48]} @{h['meta']['timestamp']}"
                       f"  ({len(h['text'].split())} words)")
+                shown = h["text"]
                 if a.full:
-                    body = h["text"]
+                    body = shown
                 else:
-                    # Cut on a word boundary so previews don't end mid-word.
-                    body = h["text"]
+                    body = shown
                     if len(body) > a.preview_chars:
                         body = body[:a.preview_chars].rsplit(" ", 1)[0] + " […]"
                 print(f"   {body}\n")
+                child = h.get("child_text")
+                if child and child != h["text"] and a.full:
+                    print(f"   --- child hit ({len(child.split())} words) ---\n   {child}\n")
         else:
             build(Path(a.chunks) if a.chunks else None, a.rebuild)
     except RuntimeError as exc:

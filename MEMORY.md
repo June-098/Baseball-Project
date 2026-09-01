@@ -1,6 +1,6 @@
 # Personal Baseball Project Memory
 
-*Last updated: 2026-08-27*
+*Last updated: 2026-09-01*
 
 ---
 
@@ -64,6 +64,18 @@
 - Time to contact
 
 **Phase 2 (pitching):** Arm path, hip-shoulder separation, release point consistency, pitch spin proxy.
+
+---
+
+### 2026-09-01 — SwingLens chat is report-aware
+
+**Decision:** After a clip is analyzed, the hitting-coach chat receives that swing’s prototype score and checkpoint cues and must answer “why did I score X” from those numbers. Off-topic refusals stay 1–2 sentences with no drill attached.
+
+---
+
+### 2026-09-01 — On-device pose is IMAGE mode plus square-pad
+
+**Decision:** Overlay and impact both failed under VIDEO-mode tracking on seeked frames (stale skeleton, peak wrist speed after contact). Pose now runs IMAGE mode on a square-padded frame mapped back to the source, and impact is the last high-speed sample with the hands still below the head. Fine-tuning a baseball pose model is the next step only if Lite still misses after this mapping.
 
 ---
 
@@ -318,10 +330,26 @@ swinglens-prototype.vercel.app.
 
 ---
 
+### 2026-08-29 — RAG parent-child chunking
+
+**Decision:** Ingest parses Markdown structurally and indexes 148 child chunks (~120–220 embedding-model tokens) with a Document/Section/Content-type prefix. Retrieval expands hits to a 300–600 token parent before the LLM. Hybrid eval on 22 IC questions: r@1 0.773, r@5 0.909, MRR 0.841 (IC-15 and IC-20 miss). RCTS 300/80 was r@1 0.955 on 416 slices; MRR dropped because mean-pooling dilutes needle sentences in larger children.
+
+`rag_answer.py` generates with local Ollama `gemma4:e4b` (Anthropic helpers stay commented). It prints Sources/Retrieved-from after prose, and keeps citations out of the answer body. Do not rewrite coaching notes into simpler English; add alias lines for athlete phrasing (curveball, rolling over, athletic position) then rebuild ingest.
+
+**Next:** alias edits on Top-Hand and Episode 5, rebuild, re-eval IC-15/IC-20. Generation is local Gemma 4 E4B via Ollama (`gemma4:e4b`); Anthropic is commented in `rag_answer.py`. Keep drill names exact. Golden `note` is still not an LLM prompt.
+
+---
+
 ### 2026-08-27 — RAG corpus is RAG Resources
 
 **Decision:** All `rag_*.py` scripts now read source notes from `Baseball Resources/RAG Resources/` and write Chroma/BM25 under `RAG Resources/rag_index/`. The old `transcripts_clean/chunks.jsonl` path is no longer the ingest source.
 
-`rag_eval.py` only scores whether search found the right note. `rag_answer.py` is the live RAG app (retrieve, then Claude writes under `SYSTEM_PROMPT`). Abstention is a refuse-to-guess gate when cosine is below 0.42. Rerank is `Retriever.search(..., rerank=True)` in `rag_ingest.py` and is not wired into `answer_question`. Golden-file `note` text is never sent to the model. `ideal_answer` is a future grading key, not required to run answers.
+`rag_eval.py` only scores whether search found the right note. `rag_answer.py` is the live RAG app (retrieve, then local Gemma writes under `SYSTEM_PROMPT`). Abstention is a refuse-to-guess gate when cosine is below 0.42. Rerank is `Retriever.search(..., rerank=True)` in `rag_ingest.py` and is not wired into `answer_question`. Golden-file `note` text is never sent to the model. `ideal_answer` is a future grading key, not required to run answers.
 
 Slack recaps for this workstation go to `#baseball-project` on the june-claude-ai workspace.
+
+---
+
+### 2026-08-31 — RAG generation is local Gemma 4 E4B
+
+**Decision:** `rag_answer.py` writes answers with Ollama `gemma4:e4b` on localhost. Anthropic client code stays commented for a one-file revert. Hybrid retrieve (Chroma + BM25) is unchanged; only the generation step swapped.

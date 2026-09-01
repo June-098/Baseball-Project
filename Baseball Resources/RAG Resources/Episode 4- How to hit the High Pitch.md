@@ -1,73 +1,74 @@
-
-
----
 ## how to hit the high pitch.
 
-We will show you today how to execute the high pitch swing.
+Hitters often train their barrels to work upward through low and middle pitches. Pitchers may respond by attacking the upper part of the strike zone with elevated fastballs.
 
-A lot of guys have been working Ferris wheel, pitchers are starting to make their adjustments on elevating the ball more in the strike zone.
+To handle a high pitch, the hitter must adjust the angle of the swing. A low pitch generally requires more shoulder tilt and a more upward barrel path. A high pitch requires a flatter shoulder turn and a flatter barrel path.
 
-So today's feature will be how to make an adjustment as a hitter to attack the high pitch.
+The objective is not to create a completely different swing. The hitter should use the same balanced load, lower-body movement, and connected rotation while adjusting the swing plane to match the height of the pitch.
 
 
-## Importance of shoulder:
-So our barrels are an extension of our shoulder.
+## Use the back shoulder to match the pitch
+so how do we hit high pitch? we need to use the back shoulder to match the pitch. A helpful coaching idea is to think of the barrel as an extension of the shoulders. This does not mean the shoulder and barrel must form a perfectly straight line. It means the angle of the shoulders influences the direction of the barrel.
 
-This is the way I would have to hit these pitches, and find plane on the low pitch where I'd have the Ferris wheel work my way down to up the way.
+For a high pitch:
+- Use less shoulder tilt.
+- Keep the back shoulder on a flatter plane.
+- Turn the barrel more directly through the height of the ball.
 
-Back shoulder, or the high pitch I would find plane this way, stay more east to us, stay level flat now, and be able to hit this pitch.
+After making a controlled forward move and landing in a balanced position, use the legs and hips to begin the rotation. Allow the back shoulder to work toward and through the pitch. The torso and barrel should remain connected as they rotate.
 
-So in reality, to keep it as simple as possible, we want to find plane with our back shoulder to whatever pitch location.
-
-So if I want to hit this pitch, again the barrels are an extension of my shoulder, I get my positive move, and I take my back shoulder to the ball, flat down my swing.
-The back shoulder is what takes you to the ball.
-
-If you can get your back shoulder to always be consistently to the ball by using your legs to get there, you're going to be a very successful hitter.
-
-I'm going to take my back shoulder to and through the ball.
+Do not reach upward with the hands or stand up out of the batting stance. Use the legs, hip hinge, and torso rotation to bring the back shoulder and barrel onto the correct plane.
 
 
 ## PVC Pipe Drill:
+How do we use less shoulder tilt and keep the back shoulder on a flatter plane to hit high pitch effectively? The hitter should practice PVC pipe drill. The PVC Pipe Drill teaches the hitter to match the shoulder plane to pitches at different heights and locations.
 
-And what we do is, with the PVC pipe right up on our shoulder, we'll have somebody front toss tennis balls, and all we're doing is finding plane and hitting the tennis ball.
+Use only lightweight PVC and soft tennis balls for this drill. Do not use regulation baseballs.
+As a reference, watch this link (https://www.youtube.com/watch?v=AyXaOtquLck) at 1:52 timestamp. Source: Gradum Gswing
+### Setup
+1. Use a lightweight PVC pipe approximately two inches in diameter.    
+2. Place the pipe across or close to the hitter’s shoulders.
+3. Have the hitter take a balanced batting stance.
+4. Position a coach or partner for short, controlled front toss.
+5. Use tennis balls and make sure the surrounding area is clear.
 
-Low inside, low and away, high and away.
-
-And just with our legs and our hinge and our back shoulder finding plane and getting the rotation of our torso and our back shoulder going to and through the ball.
-
-PVC drill is done on a front toss.
-
-You grab a couple of tennis balls, PVC pipe, two inch pipe, have the batter stay in the box and just flip to them at all levels.
-
-
-
-We want to focus on finding the plane where we can hit the high pitch, don't struggle to hit it in the right way, we want to have the feelings of contacting the ball
+### Execution
+1. The coach tosses a tennis ball toward a selected part of the strike zone.
+2. The hitter uses the legs and hip hinge to remain balanced.
+3. The hitter turns the torso and directs the back shoulder toward the ball.
+4. The pipe should travel through the ball’s plane.
+5. Continue rotating through the ball instead of stopping at contact.
 
 ## T Drill:
-- Same thing with regular T, start thinking about the back shoulder and stay within the same plane as high pitch. 
+After learning the movement with the PVC pipe, repeat it with a regular bat and batting tee.
+
+1. Begin with the ball near the middle of the strike zone.
+2. Move the tee gradually higher.
+3. Maintain the normal load and balanced landing.
+4. Keep the top hand strong and connected.
+5. Preserve barrel lag as the body begins rotating.
+6. Match the back-shoulder angle and barrel path to the height of the ball.
+7. Drive the ball on a firm line rather than trying to lift it.
+
+“Barrel lag” means the body begins rotating while the barrel remains connected and prepared to accelerate. It does not mean dragging the bat or intentionally delaying the swing.
 
 ## High Pitch Tips:
-We can go maybe a little bit higher if we want and go to the belly button.
+Being able to hit a high pitch does not mean swinging at every elevated fastball.
 
-But I'm going to tell you right now we shouldn't be swinging at any pitch over our belly button.
+As a general training guideline, avoid chasing pitches above approximately belly-button height. The exact upper boundary will vary with the hitter’s height, stance, and strike zone.
 
-You cannot be successful in today's environment of the kind of velocity we're seeing with pitchers on high fuzz, high beelo, high cheese, whatever we want to term it.
+High fastballs are especially difficult when thrown with professional-level velocity. A pitch that appears hittable may continue rising above the effective hitting zone. Develop the discipline to recognize a pitch above your preferred zone and let the umpire make the call.
 
-But anything over 93, 94, 95 above our belly button, I'm going to let that umpire call a ball.
-
-This will pick up another point on hitting the high pitch.
-
-We still want to get into what we call bat lag.
-
-The only thing we're doing is we're getting into bat lag the same way, staying nice with our top hand strong.
-
-We're just taking our back shoulder to where the ball's at, the height of the ball, using our hinge and our legs.
-
-And we're also going to be able to flatten our back.
-
-The higher the pitch, the flatter the zone and the bat barrel's got to come.
-
-The lower the pitch, the more in, the more fairest wheel, the more tilt we need to create with our shoulder.
+## Common Mistakes from hitting high pitch
+What to avoid hitting high pitch effectively.
+Avoid:
+- Using a steep uppercut against a high pitch.
+- Dropping the back shoulder excessively.
+- Standing upright to reach the ball.
+- Lifting the hands independently of the body.
+- Losing the hip hinge during rotation.
+- Dragging the barrel in the name of creating lag.
+- Chasing a fastball above the effective strike zone.
 
 
 

@@ -1,32 +1,28 @@
 
----
 ## How to hit inside pitch
 
-The problem that most players have on hitting the inside pitch is they've been taught to get their hands in here and try to make contact out in front.
+Allow your hands and barrel to work through the hitting zone. The barrel should travel forward with a slight upward turn—similar to a smooth Ferris-wheel motion. Do not force your hands inward or try to pull the ball.
 
-When in reality, we don't want to do that.
+Aim to make contact near the plane of your front foot. Your timing will influence where the ball travels:
+- If contact is slightly late, a right-handed hitter may drive the ball toward right-center field.
+- If contact is on time, the ball may travel toward center field.
+- If contact is slightly early, the ball may travel toward left-center field.
+- If contact occurs too far out in front, the hitter is more likely to hook the ball foul.
 
-In reality, we want to get our hands through the zone, working south to north, east to west in a Ferris wheel motion.
+For a left-handed hitter, reverse the field directions.
 
-And we want to catch that inside pitch on our front foot.
+## Closed-Net Drill - How to improve hitting inside pitch
 
-We may be a little bit back.
+The Closed-Net Drill teaches you to handle an inside pitch without pulling your hands inward, cutting across the ball, or hitting the net behind you.
 
-If we're late, we're going to go to the right center with it.
+1. Place a hitting net approximately three feet behind your normal hitting position.
+2. Position home plate in the center of the batter’s box.
+3. Take your normal stance.
+4. Begin with slow-motion swings.
+5. Let the barrel turn into the hitting zone and travel through the inside pitch.
+6. Avoid allowing the bat to strike the net behind you.
+7. Practice driving the ball toward the pull-side gap, center field, and the opposite-field gap.
 
-And if we catch a little bit out in front, we're going to go left center.
+The net creates a tight shoulder around the hitter. It helps you to not open up your front shoulder. If your barrel becomes long or travels too far behind you, it will strike the net. A compact, properly sequenced swing allows the barrel to clear the net and work through the baseball.
 
-We're really out in the head.
-
-Then we'll go left, but we definitely don't want to hook.
-
-By trying to teach a player to bring his hands in and to get that barrel through here, all it's going to do is give you a ground ball, a third, or a hook of ball.
-
-
-
-
-Here's what we call the phone booth drill.
-
-This drill is similar to the one Kev along we do with the Yankees and Cano.
-
-How to hit inside pitch: Phone booth drill: How to take that inside pitch to left field but also center and right field. Place your position in front of the net by 3 feet and place the home plate on the center of the batter’s box line. In terms of batter’s position, stand where you want to stand like your normal batting position. Try to go slow motion to hit inside pitch, but not hit the net behind you.
+The goal is not to force every inside pitch to the pull side. The goal is to stay compact, make contact near the front-foot plane, and keep the barrel moving through the hitting zone. This gives you a better chance to drive the inside pitch while keeping it fair.

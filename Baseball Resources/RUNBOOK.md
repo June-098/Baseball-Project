@@ -82,27 +82,26 @@ sentence and the rule that fired. Nothing is deleted silently.
 
 ## Step 3 · `src/rag_ingest.py`
 
-**chunks.jsonl → searchable index** (also holds the retriever used by steps 4 and 5)
+**RAG Resources `*.md` → searchable index** (also holds the `Retriever` used by steps 4 and 5)
 
-| Function                        | Does                                                                                                                 |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `contextual_text()`             | Prepends `[Video: Title]` before embedding. Mid-video chunks often never name their topic — the coach just says "it" |
-| `build()`                       | Embeds everything → ChromaDB, plus a BM25 keyword index                                                              |
-| `Retriever.vector_search()`     | Semantic search — good at paraphrase                                                                                 |
-| `Retriever.keyword_search()`    | BM25 — good at exact strings ("Ferris Wheel", "Mookie Betts")                                                        |
-| `Retriever.search()`            | Fuses both with Reciprocal Rank Fusion                                                                               |
-| `Retriever.best_vector_score()` | Top similarity — the number abstention reads                                                                         |
+Run this **before** eval or answers. Those files only *read* `rag_index/`.
 
-**Why it exists:** this is the vector database. ChromaDB is *embedded* — vectors live in
-`Baseball Resources/rag_index/chroma/` on your disk, not on someone's server.
+| Function | Does |
+|---|---|
+| `chunks_from_markdown()` | Calls `rag_chunk.py`: structural parent/child split |
+| `contextual_text()` | Uses `embedding_text` (Document / Section / Content type + body) |
+| `build()` | Embeds children → ChromaDB + BM25 |
+| `Retriever.search()` | Hybrid RRF. `expand_parent=True` for the LLM; False for eval |
+| `Retriever.best_vector_score()` | Top cosine — what abstention reads |
+
+**Why it exists:** this is the vector database. Nothing leaves the laptop.
 
 ```bash
-python src/rag_ingest.py                              # build the index
-python src/rag_ingest.py --rebuild                    # wipe + rebuild
-python src/rag_ingest.py --query "hit a curveball"    # smoke test (raw chunks, not prose)
+python src/rag_ingest.py --rebuild
+python src/rag_ingest.py --query "hit a curveball" --full   # parent text, not prose
 ```
 
-**Rerun when:** chunks change, or you swap the embedding model.
+**Rerun when:** the `.md` notes change, chunking changes, or you swap `EMBED_MODEL`.
 
 ---
 
@@ -144,7 +143,7 @@ python src/rag_eval.py --compare-hybrid --sweep
 **Why it exists:** Steps 1–4 return raw chunks. This turns them into readable answers.
 
 ```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
+# Copy .env.example to .env and fill ANTHROPIC_API_KEY / ANTHROPIC_WORKSPACE_ID
 python src/rag_answer.py "what is launch angle and how do I improve it?"
 python src/rag_answer.py --interactive
 python src/rag_answer.py --golden
@@ -160,7 +159,7 @@ value (0.42) is a placeholder.
 ```bash
 cd "Personal Baseball Project"
 source .venv/bin/activate
-pip install chromadb sentence-transformers rank-bm25 anthropic
+pip install chromadb sentence-transformers rank-bm25 anthropic python-dotenv
 
 python src/transcribe_videos.py        # 1. videos  -> transcripts      (skip if done)
 python src/transcript_trimming.py      # 2. clean   -> chunks.jsonl

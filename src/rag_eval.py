@@ -72,7 +72,8 @@ def evaluate(retriever, questions: list, k: int, use_hybrid: bool,
              rerank: bool = False) -> dict:
     ranks, rows = [], []
     for q in questions:
-        res = retriever.search(q["q"], k=k, use_hybrid=use_hybrid, rerank=rerank)
+        res = retriever.search(q["q"], k=k, use_hybrid=use_hybrid, rerank=rerank,
+                               expand_parent=False)
         rank = hit_rank(res, q.get("expect_sources", []))
         ranks.append(rank)
         rows.append({
@@ -191,7 +192,7 @@ def inspect_question(qid: str, k: int = 5, rerank: bool = True):
         raise RuntimeError(f"No golden question with id {qid!r}")
 
     r = Retriever()
-    hits = r.search(q["q"], k=k, rerank=rerank)
+    hits = r.search(q["q"], k=k, rerank=rerank, expand_parent=True)
 
     print(f"\n{'='*72}")
     print(f"{q['id']}  [{q['type']}]")
